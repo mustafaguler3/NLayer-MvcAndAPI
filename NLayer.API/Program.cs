@@ -10,25 +10,38 @@ using NLayer.Service.Services;
 using NLayer.Service.Mapping;
 using NLayer.Service.ValidationRules;
 using FluentValidation.AspNetCore;
+using NLayer.API.Filters;
+using Microsoft.AspNetCore.Mvc;
+using NLayer.API.Middleware;
+using Autofac.Extensions.DependencyInjection;
+using Autofac;
+using NLayer.API.Modules;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers().AddFluentValidation(i => i.RegisterValidatorsFromAssemblyContaining<ProductDtoValidator>());
+builder.Services.AddControllers(i => { 
+    i.Filters.Add(new ValidateFilterAttribute()); 
+}).AddFluentValidation(i => i.RegisterValidatorsFromAssemblyContaining<ProductDtoValidator>());
+
+
+builder.Services.Configure<ApiBehaviorOptions>(opt =>
+{
+    opt.SuppressModelStateInvalidFilter = true;
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddMemoryCache();
+
+builder.Services.AddScoped(typeof(NotFoundFilter<>));
+
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
 builder.Services.AddAutoMapper(typeof(MapProfile));
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 
 builder.Services.AddDbContext<VtContext>(i =>
@@ -39,6 +52,9 @@ builder.Services.AddDbContext<VtContext>(i =>
     });
 });
 
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+
+builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder => containerBuilder.RegisterModule(new RepoServiceModule()));
 
 var app = builder.Build();
 
@@ -50,6 +66,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCustomException();
 
 app.UseAuthorization();
 

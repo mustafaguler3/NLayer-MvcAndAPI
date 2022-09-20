@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="FluentValidation" Version="11.2.2" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.2.2" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.2.2" />
@@ -22,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\NLayer.Caching\NLayer.Caching.csproj" />
     <ProjectReference Include="..\NLayer.Repository\NLayer.Repository.csproj" />
     <ProjectReference Include="..\NLayer.Service\NLayer.Service.csproj" />
   </ItemGroup>

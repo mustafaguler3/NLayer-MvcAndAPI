@@ -2,14 +2,14 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.AspNetCore.Mvc;
+using NLayer.API.Filters;
 using NLayer.Core;
 using NLayer.Core.Dtos;
 using NLayer.Core.Services;
 
 namespace NLayer.API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+    [ValidateFilterAttribute]
     public class ProductController : CustomBaseController
     {
         private readonly IMapper _mapper;
@@ -30,10 +30,11 @@ namespace NLayer.API.Controllers
             //return Ok(CustomResponseDto<List<ProductDto>>.Success(200, productDto));
             return CreateActionResult(CustomResponseDto<List<ProductDto>>.Success(200, productDto));
         }
+        [ServiceFilter(typeof(NotFoundFilter<Product>))]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var product = await _service.GetByIdAsync(id);
+            var product = await _service.GetByIdAsync(id);            
             var dto = _mapper.Map<ProductDto>(product);
 
             return CreateActionResult(CustomResponseDto<ProductDto>.Success(200, dto));
