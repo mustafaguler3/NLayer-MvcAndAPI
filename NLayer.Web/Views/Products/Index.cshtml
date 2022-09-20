@@ -1,0 +1,26 @@
+﻿@using NLayer.Core.Dtos
+@model List<ProductWithCategoryDto>
+
+<table class="table table-striped">
+    <thead>
+        <td>Id</td>
+        <td>Name</td>
+        <td>Price</td>
+        <td>Stock</td>
+        <td>Category</td>
+        <td>CreatedDate</td>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Name</td>
+                <td>@item.Price</td>
+                <td>@item.Stock</td>
+                <td>@item.Category.Name</td>
+                <td>@item.CreatedDate</td>
+            </tr>
+        }
+    </tbody>
+</table>
