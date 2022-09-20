@@ -20,6 +20,10 @@
                 <td>@item.Stock</td>
                 <td>@item.Category.Name</td>
                 <td>@item.CreatedDate</td>
+                <td>
+                    <a class="btn btn-primary btn-sm" asp-controller="Products" asp-action="Update" asp-route="@item.Id">Update</a>
+                    <a class="btn btn-danger btn-sm" asp-controller="Products" asp-action="Remove" asp-route="@item.Id">Delete</a>
+                </td>
             </tr>
         }
     </tbody>
