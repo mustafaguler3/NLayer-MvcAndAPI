@@ -8,6 +8,7 @@ using NLayer.Service.Mapping;
 using FluentValidation.AspNetCore;
 using NLayer.Service.ValidationRules;
 using NLayer.Web;
+using NLayer.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +32,16 @@ builder.Services.AddDbContext<VtContext>(i =>
 });
 
 var app = builder.Build();
+
+builder.Services.AddHttpClient<ProductApiService>(op =>
+{
+    op.BaseAddress = new Uri(builder.Configuration["BaseUrl"]);
+});
+
+builder.Services.AddHttpClient<CategoryApiService>(op =>
+{
+    op.BaseAddress = new Uri(builder.Configuration["BaseUrl"]);
+});
 
 app.UseExceptionHandler("/Home/Error");
 
